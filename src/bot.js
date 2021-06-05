@@ -3,14 +3,12 @@ require("dotenv").config();
 const CoinMarketCap = require("./api/coinmarketcap");
 const CoinMarketCapHelper = require("./helpers/currency-symbols");
 
-let eth = CoinMarketCapHelper.EthSymbol;
-let btc = CoinMarketCapHelper.BtcSymbol;
-let eur = CoinMarketCapHelper.EuroSymbol;
+const Twitter = require("./api/twitter");
 
-CoinMarketCap.getPrice(eth, eur)
-	.then((result) => {
-		console.log(result);
+Twitter.tweet("time to track Eth coins")
+	.then((data) => {
+		console.log(data);
 	})
 	.catch((err) => {
-		console.log({ error: err });
+		console.log(err);
 	});

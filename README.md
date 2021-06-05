@@ -8,8 +8,14 @@ The objective of this project is to track the value of one Ethereum coin and twe
 
 ### system requirements
 
-To acheive the project objective, some requirements must be met:
+To acheive the project objective, some requirements must be met.
 
-- track a x% increase/decrease of the Eth coin
-- find an item that is worth less than or equal to the value of the Eth coin
-- tweet the update price and correspinding item
+**basic**:
+
+1. fetch Eth currency quota ✅
+2. post tweets ✅
+3. find something worth X Eur ⛔️
+
+**intermediate**:
+
+4. track +/- 5% movements in Eth currency quota ⛔️

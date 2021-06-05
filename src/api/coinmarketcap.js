@@ -1,6 +1,6 @@
 const Axios = require("axios").default;
 
-const BaseUrl = process.env.COINMARKETCAP_API_URI;
+const BaseUrl = process.env.COINMARKETCAP_API_URL;
 const CoinMarketCapKey = process.env.COINMARKETCAP_API_KEY;
 
 /**
