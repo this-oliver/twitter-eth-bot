@@ -1,0 +1,28 @@
+{
+	"name": "twitter-eth-bot",
+	"version": "1.0.0",
+	"description": "a twitter bot that tweets what one Eth can get you",
+	"main": "src/bot.js",
+	"scripts": {
+		"start": "node src/bot.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/olivermanzi/twitter-eth-bot.git"
+	},
+	"keywords": [
+		"ethereum",
+		"twitter",
+		"bots"
+	],
+	"author": " <olivermanzi.dev@gmail.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/olivermanzi/twitter-eth-bot/issues"
+	},
+	"homepage": "https://github.com/olivermanzi/twitter-eth-bot#readme",
+	"dependencies": {
+		"axios": "^0.21.1",
+		"dotenv": "^10.0.0"
+	}
+}
