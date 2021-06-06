@@ -14,8 +14,9 @@ To acheive the project objective, some requirements must be met.
 
 1. fetch Eth currency quota ✅
 2. post tweets ✅
-3. find something worth X Eur ⛔️
+3. find something worth X Eur (Stocks ✅, Amazon Products ⛔️, Real Estate Properties ⛔️)
+4. run a task every hour ✅
 
 **intermediate**:
 
-4. track +/- 5% movements in Eth currency quota ⛔️
+5. track +/- 5% movements in Eth currency quota ⛔️

@@ -1,7 +1,7 @@
 const Axios = require("axios").default;
 
-const BaseUrl = process.env.COINMARKETCAP_API_URL;
-const CoinMarketCapKey = process.env.COINMARKETCAP_API_KEY;
+const _CmcBaseUrl = process.env.COINMARKETCAP_API_URL;
+const _CmcKey = process.env.COINMARKETCAP_API_KEY;
 
 /**
  * Returns fiat price (number) of crypto currency
@@ -9,19 +9,22 @@ const CoinMarketCapKey = process.env.COINMARKETCAP_API_KEY;
  * @param {String} fiatSymbol - Fiat currency symbol (based on cmc docs)
  * @returns {Promise<Number>}
  */
-exports.getPrice = async (coinSymbol, fiatSymbol) => {
+exports.getCryptoPrice = async (coinSymbol, fiatSymbol) => {
 	let request = null,
 		response = null,
 		price = null;
 
 	try {
-		request = await Axios.get(`${BaseUrl}/v1/cryptocurrency/quotes/latest`, {
-			headers: { "X-CMC_PRO_API_KEY": CoinMarketCapKey },
-			params: {
-				symbol: coinSymbol,
-				convert: fiatSymbol,
-			},
-		});
+		request = await Axios.get(
+			`${_CmcBaseUrl}/v1/cryptocurrency/quotes/latest`,
+			{
+				headers: { "X-CMC_PRO_API_KEY": _CmcKey },
+				params: {
+					symbol: coinSymbol,
+					convert: fiatSymbol,
+				},
+			}
+		);
 	} catch (error) {
 		throw { cmc_error: error };
 	}

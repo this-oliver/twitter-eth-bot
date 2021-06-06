@@ -1,14 +1,22 @@
 require("dotenv").config();
+const { getStockData, tweetStocks } = require("./tasks");
+const OneHour = 3600000; // 3,600,000 ms = 1 hour
 
-const CoinMarketCap = require("./api/coinmarketcap");
-const CoinMarketCapHelper = require("./helpers/currency-symbols");
+// task
+async function execute() {
+	console.log("fetching data...");
 
-const Twitter = require("./api/twitter");
+	try {
+		let data = await getStockData();
+		await tweetStocks(data.conversion, data.ticker.symbol, data.ticker.name);
+		console.log("updated status!");
+	} catch (error) {
+		console.log(error);
+	}
+}
 
-Twitter.tweet("time to track Eth coins")
-	.then((data) => {
-		console.log(data);
-	})
-	.catch((err) => {
-		console.log(err);
-	});
+// execute task immediately
+execute();
+
+//execute task every hour
+setInterval(execute, OneHour);
