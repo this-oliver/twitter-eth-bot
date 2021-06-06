@@ -1,10 +1,11 @@
 {
 	"name": "twitter-eth-bot",
 	"version": "1.0.0",
-	"description": "a twitter bot that tweets what one Eth can get you",
+	"description": "a bot that tweets what one Eth can get you",
 	"main": "src/bot.js",
 	"scripts": {
-		"start": "node src/bot.js"
+		"start": "npm run bot",
+		"bot": "node src/bot.js"
 	},
 	"repository": {
 		"type": "git",
