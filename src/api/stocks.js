@@ -48,7 +48,7 @@ exports.getRandomTicker = async () => {
  * @param {String} ticker - stock ticker
  * @returns {Promise<Number>}
  */
-exports.getStockPrice = async (ticker) => {
+exports.getstockQuota = async (ticker) => {
 	let request = null,
 		price = null;
 

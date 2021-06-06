@@ -7,25 +7,25 @@ const Twitter = require("./api/twitter");
 const TweetBuilder = require("./helpers/tweetBuilder");
 
 exports.getStockData = async () => {
-	let ethPrice = null,
+	let ethQuota = null,
 		ticker = null,
-		stockPrice = null;
+		stockQuota = null;
 
 	try {
 		// get Eth price
-		ethPrice = await Coins.getCryptoPrice(Symbols.ETH, Symbols.USD);
+		ethQuota = await Coins.getCryptoPrice(Symbols.ETH, Symbols.USD);
 		// get Stock price
 		ticker = await Stock.getRandomTicker();
-		stockPrice = await Stock.getStockPrice(ticker.symbol);
+		stockQuota = await Stock.getstockQuota(ticker.symbol);
 	} catch (error) {
 		throw error;
 	}
 
 	return {
-		ethPrice,
+		ethQuota,
 		ticker,
-		stockPrice,
-		conversion: Converter.CoinToStock(ethPrice, stockPrice),
+		stockQuota,
+		conversion: Converter.CoinToStock(ethQuota, stockQuota),
 	};
 };
 
