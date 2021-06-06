@@ -6,5 +6,5 @@
  * @returns {String}
  */
 exports.buildStockTweet = (conversion, symbol, name) => {
-	return `One Eth can get you ${conversion} shares of ${name} (${symbol}). #eth #ethereum #crypto`;
+	return `One Eth can get you ${conversion} shares of ${name} ($${symbol}). #eth #ethereum #crypto`;
 };
