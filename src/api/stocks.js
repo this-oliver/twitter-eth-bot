@@ -28,7 +28,7 @@ exports.getRandomTicker = async () => {
 
 	try {
 		// fetch tickers
-		request = await Axios.get(`${_IexCloudBaseUrl}/ref-data/symbols`, {
+		request = await Axios.get(`${_IexCloudBaseUrl}/v1/ref-data/symbols`, {
 			params: {
 				token: _IexCloudKey,
 			},
@@ -54,7 +54,7 @@ exports.getStockPrice = async (ticker) => {
 
 	try {
 		request = await Axios.get(
-			`${_MarketStackBaseUrl}/tickers/${ticker}/intraday/latest`,
+			`${_MarketStackBaseUrl}/v1/tickers/${ticker}/intraday/latest`,
 			{
 				params: {
 					access_key: _MarketStackKey,
@@ -65,7 +65,11 @@ exports.getStockPrice = async (ticker) => {
 		stock = request.data;
 		price = stock.open;
 	} catch (error) {
-		throw { stock_marketstack_error: error, ticker: ticker };
+		throw {
+			stock_marketstack_error: error,
+			response: error.response.data,
+			ticker: ticker,
+		};
 	}
 
 	return price;
