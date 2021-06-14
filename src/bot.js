@@ -1,10 +1,9 @@
 require("dotenv").config();
+
 const { getStockData, tweetStocks } = require("./tasks");
-
 const Moment = require("moment");
-const LastTweetTime = null;
-
 const OneHour = 3600000; // 3,600,000 ms = 1 hour
+let LastTweetTime = null;
 
 // task
 async function execute() {
@@ -23,6 +22,7 @@ async function execute() {
 		while (stock == null) {
 			try {
 				stock = await getStockData();
+				console.log(stock);
 			} catch (error) {
 				console.log(error);
 			}
@@ -34,12 +34,13 @@ async function execute() {
 			stock.ticker.name
 		);
 
-		console.log("updated status!");
-
 		LastTweetTime = Moment(
 			tweet.created_at,
 			"ddd MMM DD HH:mm:ss Z YYYY"
 		).fromNow();
+
+		console.log(tweet);
+		console.log("updated status!");
 	}
 }
 
