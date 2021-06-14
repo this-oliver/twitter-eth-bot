@@ -8,25 +8,38 @@ const OneHour = 3600000; // 3,600,000 ms = 1 hour
 
 // task
 async function execute() {
-	try {
-		if (LastTweetTime == null || Moment().isAfter(LastTweetTime, "hour")) {
-			console.log("fetching data...");
-			let stock = await getStockData();
-			let tweet = await tweetStocks(
-				stock.conversion,
-				stock.ticker.symbol,
-				stock.ticker.name
-			);
+	let hasBeenAnHour = false,
+		stock = null,
+		tweet = null;
 
-			console.log("updated status!");
+	// is true if first time tweeting or the last tweet was an hour ago
+	hasBeenAnHour =
+		LastTweetTime == null || Moment().isAfter(LastTweetTime, "hour");
 
-			LastTweetTime = Moment(
-				tweet.created_at,
-				"ddd MMM DD HH:mm:ss Z YYYY"
-			).fromNow();
+	if (hasBeenAnHour) {
+		console.log("fetching data...");
+
+		// fetch stocks until you get something
+		while (stock == null) {
+			try {
+				stock = await getStockData();
+			} catch (error) {
+				console.log(error);
+			}
 		}
-	} catch (error) {
-		console.log(error);
+
+		tweet = await tweetStocks(
+			stock.conversion,
+			stock.ticker.symbol,
+			stock.ticker.name
+		);
+
+		console.log("updated status!");
+
+		LastTweetTime = Moment(
+			tweet.created_at,
+			"ddd MMM DD HH:mm:ss Z YYYY"
+		).fromNow();
 	}
 }
 
