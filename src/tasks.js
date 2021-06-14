@@ -30,7 +30,7 @@ exports.getStockData = async () => {
 
 	return {
 		ethQuota,
-		ticker,
+		ticker: { symbol: ticker.symbol, name: ticker.name },
 		stockQuota,
 		conversion: Converter.CoinToStock(ethQuota, stockQuota),
 	};
