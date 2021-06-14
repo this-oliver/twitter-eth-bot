@@ -1,49 +1,29 @@
 require("dotenv").config();
 
-const { getStockData, tweetStocks } = require("./tasks");
-const Moment = require("moment");
-const OneHour = 3600000; // 3,600,000 ms = 1 hour
-let LastTweetTime = null;
+const express = require("express");
+const app = express();
 
-// task
-async function execute() {
-	let hasBeenAnHour = false;
-	let stock = null;
-	let tweet = null;
+const { execute, getStaticData, getStockData } = require("./tasks");
 
-	// is true if first time tweeting or the last tweet was an hour ago
-	hasBeenAnHour =
-		LastTweetTime == null || Moment().isAfter(LastTweetTime, "hour");
+app.get("/", (req, res) => {
+	let staticData = getStaticData();
+	res.status(200).send(staticData);
+});
 
-	if (hasBeenAnHour) {
-		console.log("fetching data...");
-
-		// fetch stocks until you get something
-		try {
-			stock = await getStockData();
-			console.log(stock);
-
-			tweet = await tweetStocks(
-				stock.conversion,
-				stock.ticker.symbol,
-				stock.ticker.name
-			);
-			console.log(tweet);
-
-			LastTweetTime = Moment(
-				tweet.created_at,
-				"ddd MMM DD HH:mm:ss Z YYYY"
-			).fromNow();
-
-			console.log("updated status!");
-		} catch (error) {
-			console.log(error);
-		}
+app.get("/stocks", async (req, res) => {
+	try {
+		let stock = await getStockData();
+		res.status(200).send(staticData);
+	} catch (error) {
+		res.status(400).send(error);
 	}
-}
+});
 
-// execute task immediately
-execute();
+app.listen(process.env.PORT || 3000, () => {
+	console.log("Tob is alive!");
 
-//execute task every hour
-setInterval(execute, OneHour);
+	// execute task immediately
+	execute();
+	//execute task every hour (3,600,000 ms == 1 hour)
+	setInterval(execute, 3600000);
+});
