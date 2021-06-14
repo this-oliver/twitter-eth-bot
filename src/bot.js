@@ -20,7 +20,7 @@ async function execute() {
 
 			console.log("updated status!");
 
-			LastTweetTime = moment(
+			LastTweetTime = Moment(
 				tweet.created_at,
 				"ddd MMM DD HH:mm:ss Z YYYY"
 			).fromNow();
