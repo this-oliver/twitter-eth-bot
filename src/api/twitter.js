@@ -9,7 +9,7 @@ const TwitterBot = new Twitter({
 /**
  * Tweets specidied text
  * @param {String} text - status text
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 exports.tweet = async (text) => {
 	try {

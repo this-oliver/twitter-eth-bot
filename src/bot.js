@@ -7,9 +7,9 @@ let LastTweetTime = null;
 
 // task
 async function execute() {
-	let hasBeenAnHour = false,
-		stock = null,
-		tweet = null;
+	let hasBeenAnHour = false;
+	let stock = null;
+	let tweet = null;
 
 	// is true if first time tweeting or the last tweet was an hour ago
 	hasBeenAnHour =
@@ -19,28 +19,26 @@ async function execute() {
 		console.log("fetching data...");
 
 		// fetch stocks until you get something
-		while (stock == null) {
-			try {
-				stock = await getStockData();
-				console.log(stock);
-			} catch (error) {
-				console.log(error);
-			}
+		try {
+			stock = await getStockData();
+			console.log(stock);
+
+			tweet = await tweetStocks(
+				stock.conversion,
+				stock.ticker.symbol,
+				stock.ticker.name
+			);
+			console.log(tweet);
+
+			LastTweetTime = Moment(
+				tweet.created_at,
+				"ddd MMM DD HH:mm:ss Z YYYY"
+			).fromNow();
+
+			console.log("updated status!");
+		} catch (error) {
+			console.log(error);
 		}
-
-		tweet = await tweetStocks(
-			stock.conversion,
-			stock.ticker.symbol,
-			stock.ticker.name
-		);
-
-		LastTweetTime = Moment(
-			tweet.created_at,
-			"ddd MMM DD HH:mm:ss Z YYYY"
-		).fromNow();
-
-		console.log(tweet);
-		console.log("updated status!");
 	}
 }
 

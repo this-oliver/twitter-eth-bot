@@ -7,18 +7,25 @@ const Twitter = require("./api/twitter");
 const TweetBuilder = require("./helpers/tweetBuilder");
 
 exports.getStockData = async () => {
-	let ethQuota = null,
-		ticker = null,
-		stockQuota = null;
+	let success = false;
+	let ethQuota = null;
+	let ticker = null;
+	let stockQuota = null;
 
-	try {
-		// get Eth price
-		ethQuota = await Coins.getCryptoPrice(Symbols.ETH, Symbols.USD);
-		// get Stock price
-		ticker = await Stock.getRandomTicker();
-		stockQuota = await Stock.getstockQuota(ticker.symbol);
-	} catch (error) {
-		throw error;
+	while (success == false) {
+		try {
+			// get Eth price
+			ethQuota = await Coins.getCryptoPrice(Symbols.ETH, Symbols.USD);
+
+			// get Stock price
+			ticker = await Stock.getRandomTicker();
+			stockQuota = await Stock.getstockQuota(ticker.symbol);
+
+			// data captured
+			success = true;
+		} catch (error) {
+			throw error;
+		}
 	}
 
 	return {
@@ -32,7 +39,14 @@ exports.getStockData = async () => {
 exports.tweetStocks = async (conversion, symbol, name) => {
 	try {
 		let text = TweetBuilder.buildStockTweet(conversion, symbol, name);
-		return await Twitter.tweet(text);
+		let tweet = await Twitter.tweet(text);
+
+		return {
+			id: tweet.id,
+			created_at: tweet.created_at,
+			text: tweet.text,
+			tweet: tweet.tweet,
+		};
 	} catch (error) {
 		throw error;
 	}
