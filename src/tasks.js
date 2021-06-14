@@ -13,36 +13,54 @@ let hasBeenAnHour = false;
 let stock = null;
 let tweet = null;
 
+/**
+ * Returns stock data
+ * @returns {Object}
+ */
 exports.getStockData = async () => {
-	let _success = false;
 	let _ethQuota = null;
 	let _ticker = null;
 	let _stockQuota = null;
 
-	while (_success == false) {
+	while (_ethQuota == null) {
 		try {
-			// get Eth price
 			_ethQuota = await Coins.getCryptoPrice(Symbols.ETH, Symbols.USD);
+		} catch (error) {
+			throw error;
+		}
+	}
 
-			// get Stock price
+	while (_ticker == null) {
+		try {
 			_ticker = await Stock.getRandomTicker();
-			_stockQuota = await Stock.getstockQuota(_ticker.symbol);
+		} catch (error) {
+			throw error;
+		}
+	}
 
-			// data captured
-			_success = true;
+	while (_stockQuota == null) {
+		try {
+			_stockQuota = await Stock.getstockQuota(_ticker.symbol);
 		} catch (error) {
 			throw error;
 		}
 	}
 
 	return {
-		ethQuota,
+		ethQuota: _ethQuota,
 		ticker: { symbol: _ticker.symbol, name: _ticker.name },
-		stockQuota,
+		stockQuota: _stockQuota,
 		conversion: Converter.CoinToStock(_ethQuota, _stockQuota),
 	};
 };
 
+/**
+ * Tweets stock data and returns tweet object
+ * @param {Number} _conversion - conversion rate for stock to eth coin
+ * @param {String} _symbol - stock symbol
+ * @param {String} _name - stock name
+ * @returns {Object}
+ */
 exports.tweetStocks = async (_conversion, _symbol, _name) => {
 	try {
 		let _text = TweetBuilder.buildStockTweet(_conversion, _symbol, _name);
@@ -52,32 +70,33 @@ exports.tweetStocks = async (_conversion, _symbol, _name) => {
 			id: _tweet.id,
 			created_at: _tweet.created_at,
 			text: _tweet.text,
-			tweet: _tweet.tweet,
 		};
 	} catch (error) {
 		throw error;
 	}
 };
 
+/**
+ * Fetches stock data and tweets it
+ */
 exports.execute = async () => {
-	// is true if first time tweeting or the last tweet was an hour ago
-	hasBeenAnHour =
-		LastTweetTime == null || Moment().isAfter(LastTweetTime, "hour");
+	try {
+		// is true if first time tweeting or the last tweet was an hour ago
+		hasBeenAnHour =
+			LastTweetTime == null || Moment().isAfter(LastTweetTime, "hour");
 
-	if (hasBeenAnHour) {
-		console.log("fetching data...");
+		if (hasBeenAnHour) {
+			console.log("fetching data...");
 
-		// fetch stocks until you get something
-		try {
-			stock = await getStockData();
-			console.log(stock);
+			stock = await this.getStockData();
 
-			tweet = await tweetStocks(
+			tweet = await this.tweetStocks(
 				stock.conversion,
 				stock.ticker.symbol,
 				stock.ticker.name
 			);
-			console.log(tweet);
+
+			console.log({ stock: stock, tweet: tweet });
 
 			LastTweetTime = Moment(
 				tweet.created_at,
@@ -85,12 +104,16 @@ exports.execute = async () => {
 			).fromNow();
 
 			console.log("updated status!");
-		} catch (error) {
-			console.log(error);
 		}
+	} catch (error) {
+		console.log(error);
 	}
 };
 
+/**
+ * Returns static data from latest api calls
+ * @returns {Object}
+ */
 exports.getStaticData = () => {
 	return {
 		stock,
