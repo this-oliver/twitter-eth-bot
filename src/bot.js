@@ -1,15 +1,30 @@
 require("dotenv").config();
 const { getStockData, tweetStocks } = require("./tasks");
+
+const Moment = require("moment");
+const LastTweetTime = null;
+
 const OneHour = 3600000; // 3,600,000 ms = 1 hour
 
 // task
 async function execute() {
-	console.log("fetching data...");
-
 	try {
-		let data = await getStockData();
-		await tweetStocks(data.conversion, data.ticker.symbol, data.ticker.name);
-		console.log("updated status!");
+		if (LastTweetTime == null || Moment().isAfter(LastTweetTime, "hour")) {
+			console.log("fetching data...");
+			let stock = await getStockData();
+			let tweet = await tweetStocks(
+				stock.conversion,
+				stock.ticker.symbol,
+				stock.ticker.name
+			);
+
+			console.log("updated status!");
+
+			LastTweetTime = moment(
+				tweet.created_at,
+				"ddd MMM DD HH:mm:ss Z YYYY"
+			).fromNow();
+		}
 	} catch (error) {
 		console.log(error);
 	}
