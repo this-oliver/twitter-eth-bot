@@ -9,18 +9,13 @@ const TwitterBot = new Twitter({
 /**
  * Tweets specidied text
  * @param {String} text - status text
- * @returns Object
+ * @returns {Object}
  */
 exports.tweet = async (text) => {
-	let request = null,
-		response = null;
-
 	try {
-		request = await TwitterBot.post("statuses/update", { status: text });
+		let request = await TwitterBot.post("statuses/update", { status: text });
+		return request.data;
 	} catch (error) {
 		throw { twitter_error: error };
 	}
-
-	response = request.data;
-	return response;
 };

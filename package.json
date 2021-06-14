@@ -25,6 +25,7 @@
 	"dependencies": {
 		"axios": "^0.21.1",
 		"dotenv": "^10.0.0",
+		"moment": "^2.29.1",
 		"twit": "^2.2.11"
 	}
 }
