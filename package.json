@@ -4,8 +4,7 @@
 	"description": "a bot that tweets what one Eth can get you",
 	"main": "src/bot.js",
 	"scripts": {
-		"start": "npm run bot",
-		"bot": "node src/bot.js"
+		"start": "node src/bot.js"
 	},
 	"repository": {
 		"type": "git",
