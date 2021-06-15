@@ -9,7 +9,6 @@ const Converter = require("./helpers/converter");
 const TweetBuilder = require("./helpers/tweetBuilder");
 
 let LastTweetTime = null;
-let hasBeenAnHour = false;
 let stock = null;
 let tweet = null;
 
@@ -26,23 +25,16 @@ exports.getStockData = async () => {
 		try {
 			_ethQuota = await Coins.getCryptoPrice(Symbols.ETH, Symbols.USD);
 		} catch (error) {
-			throw error;
+			console.log(error);
 		}
 	}
 
-	while (_ticker == null) {
+	while (_ticker == null || _stockQuota == null) {
 		try {
 			_ticker = await Stock.getRandomTicker();
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	while (_stockQuota == null) {
-		try {
 			_stockQuota = await Stock.getstockQuota(_ticker.symbol);
 		} catch (error) {
-			throw error;
+			console.log(error);
 		}
 	}
 
@@ -52,6 +44,35 @@ exports.getStockData = async () => {
 		stockQuota: _stockQuota,
 		conversion: Converter.CoinToStock(_ethQuota, _stockQuota),
 	};
+};
+
+/**
+ * Returns latest tweet by username
+ * @returns {Object}
+ */
+exports.getLatestTweet = async () => {
+	let _latestTweets = await Twitter.getUserTweets("one_ethereum", 1);
+	return _latestTweets[0];
+};
+
+/**
+ * Returns true if tweet time was created more than an hour ago
+ * @param {String} _tweetTime - Twitter object 'created_at' attribute
+ * @returns {Boolean}
+ */
+exports.hasBeenAnHour = (_tweetTime) => {
+	let _lastTweetTime = Moment(_tweetTime, "ddd MMM DD HH:mm:ss Z YYYY");
+	let _hasBeenAnHour = Moment().isAfter(_lastTweetTime, "hour");
+
+	if (_hasBeenAnHour == false) {
+		console.log(
+			`Tob has tweeted in the last hour (${_lastTweetTime.format(
+				"ddd, DD/MM/YYYY, HH:mm:ss"
+			)}).\nNext tweet is scheduled in ${_lastTweetTime.minutes()} mins.`
+		);
+	}
+
+	return _hasBeenAnHour;
 };
 
 /**
@@ -81,11 +102,12 @@ exports.tweetStocks = async (_conversion, _symbol, _name) => {
  */
 exports.execute = async () => {
 	try {
-		// is true if first time tweeting or the last tweet was an hour ago
-		hasBeenAnHour =
-			LastTweetTime == null || Moment().isAfter(LastTweetTime, "hour");
+		let _lastTweet = await this.getLatestTweet();
+		let _hasBeenAnHour = this.hasBeenAnHour(_lastTweet.created_at);
 
-		if (hasBeenAnHour) {
+		LastTweetTime = Moment(_lastTweet.created_at, "ddd MMM DD HH:mm:ss Z YYYY");
+
+		if (_hasBeenAnHour) {
 			console.log("fetching data...");
 
 			stock = await this.getStockData();
@@ -96,13 +118,9 @@ exports.execute = async () => {
 				stock.ticker.name
 			);
 
+			LastTweetTime = Moment(tweet.created_at, "ddd MMM DD HH:mm:ss Z YYYY");
+
 			console.log({ stock: stock, tweet: tweet });
-
-			LastTweetTime = Moment(
-				tweet.created_at,
-				"ddd MMM DD HH:mm:ss Z YYYY"
-			).fromNow();
-
 			console.log("updated status!");
 		}
 	} catch (error) {
@@ -119,6 +137,5 @@ exports.getStaticData = () => {
 		stock,
 		tweet,
 		LastTweetTime,
-		hasBeenAnHour,
 	};
 };

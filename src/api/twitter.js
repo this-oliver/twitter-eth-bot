@@ -19,3 +19,21 @@ exports.tweet = async (text) => {
 		throw { twitter_error: error };
 	}
 };
+
+/**
+ * Gets latest tweets by user
+ * @param {String} username - username
+ * @param {Number} count - number of tweets that should be fetched
+ * @returns {Promise<Object>}
+ */
+exports.getUserTweets = async (username, count) => {
+	try {
+		let request = await TwitterBot.get("statuses/user_timeline", {
+			screen_name: username,
+			count: count,
+		});
+		return request.data;
+	} catch (error) {
+		throw { twitter_error: error };
+	}
+};
