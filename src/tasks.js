@@ -133,9 +133,14 @@ exports.execute = async () => {
  * @returns {Object}
  */
 exports.getStaticData = () => {
+	let _lastTweetTime = LastTweetTime;
+
+	if (_lastTweetTime !== null) {
+		_lastTweetTime = _lastTweetTime.format("ddd DD/MM/YYYY HH:mm:ss");
+	}
 	return {
 		stock,
 		tweet,
-		LastTweetTime,
+		LastTweetTime: _lastTweetTime,
 	};
 };
